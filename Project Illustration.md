@@ -106,7 +106,5 @@ The solution involves three main components: web scraping, SQL database integrat
 
 By following this approach, you can automate the scraping of bus route details, store the data in an SQL database, and create an interactive Streamlit app for data analysis.
 
-Author: Vivek Duggal
-Guvi Geek Networks IITM Research Park
-Batch ID: MD 114
+Author: Vivek Duggal | Guvi Geek Networks IITM Research Park | Batch ID: MD 114
 
