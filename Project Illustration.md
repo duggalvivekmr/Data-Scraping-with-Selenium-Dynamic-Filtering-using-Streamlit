@@ -104,4 +104,9 @@ The solution involves three main components: web scraping, SQL database integrat
    1. Use Streamlit widgets to add filters for route name, bus type, etc.  
    2. Use Streamlit to analyse data
 
-By following this approach, you can automate the scraping of bus route details, store the data in an SQL database, and create an interactive Streamlit app for data analysis.  
+By following this approach, you can automate the scraping of bus route details, store the data in an SQL database, and create an interactive Streamlit app for data analysis.
+
+Author: Vivek Duggal
+Guvi Geek Networks IITM Research Park
+Batch ID: MD 114
+
