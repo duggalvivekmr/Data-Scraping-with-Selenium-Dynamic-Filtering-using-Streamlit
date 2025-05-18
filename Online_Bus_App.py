@@ -167,37 +167,46 @@ if web == "Buses & Routes":
                     # Filter data based on selected price range
                     filtered_data = data[(data['Price']>=price_range[0]) & (data['Price'] <= price_range[1])]
                     
-                    # Display filtered data
-                    st.write(f"### Data for Route: {selected_route} within price range {price_range[0]} to {price_range[1]}")
-                    st.write(filtered_data)
-                    # Filter by Star_Rating and Bus_Type
-                    star_ratings = filtered_data["Star_Rating"].unique().tolist()
-                    selected_ratings = st.multiselect(
-                        "Filter by Star Rating", star_ratings
-                    )
-
-                    bus_types = filtered_data["Bus_Type"].unique().tolist()
-                    selected_bus_types = st.multiselect(
-                        "Filter by Bus Type", bus_types
-                    )
-
-                    if selected_ratings and selected_bus_types:
-                            final_filtered_data = filter_data(
-                                filtered_data,
-                                selected_ratings,
-                                selected_bus_types,
-                            )
-                            # Display filtered data table with a subheader
-                            st.write(
-                                f"### Further Filtered Data for Star Rating: {selected_ratings} and Bus Type: {selected_bus_types}"
-                            )
-                            st.write(final_filtered_data)
+                    # Unique values for Star Rating dropdown
+                    star_ratings = sorted(filtered_data["Star_Rating"].unique().tolist())
+                    selected_ratings = st.multiselect("Filter by Star Rating", star_ratings)
+                    
+                    # Dynamically filter Bus Types based on selected ratings
+                    if selected_ratings:
+                        bus_type_options = filtered_data[filtered_data["Star_Rating"].isin(selected_ratings)]["Bus_Type"].unique().tolist()
                     else:
-                        st.write(
-                            f"No data found for Route: {selected_route} with the specified price sort order."
-                        )
-            else:
-                st.write("No routes found starting with the specified letter.")
+                        bus_type_options = filtered_data["Bus_Type"].unique().tolist()
+
+                    selected_bus_types = st.multiselect("Filter by Bus Type", bus_type_options)
+
+                    # Add dropdowns for Departing and Reaching Time
+                    departure_times = sorted(filtered_data["Departing_Time_HH:MM"].unique().tolist())
+                    selected_departure_time = st.sidebar.selectbox("Filter by Departure Time", ["All"] + departure_times)
+
+                    reaching_times = sorted(filtered_data["Reaching_Time_HH:MM"].unique().tolist())
+                    selected_reaching_time = st.sidebar.selectbox("Filter by Reaching Time", ["All"] + reaching_times)
+
+                    # Apply all filters
+                    final_filtered_data = filtered_data
+
+                    if selected_ratings:
+                        final_filtered_data = final_filtered_data[final_filtered_data["Star_Rating"].isin(selected_ratings)]
+
+                    if selected_bus_types:
+                        final_filtered_data = final_filtered_data[final_filtered_data["Bus_Type"].isin(selected_bus_types)]
+
+                    if selected_departure_time != "All":
+                        final_filtered_data = final_filtered_data[final_filtered_data["Departing_Time_HH:MM"] == selected_departure_time]
+
+                    if selected_reaching_time != "All":
+                        final_filtered_data = final_filtered_data[final_filtered_data["Reaching_Time_HH:MM"] == selected_reaching_time]
+
+                    # Reapply sorting AFTER filtering
+                    final_filtered_data = final_filtered_data.sort_values(by="Price", ascending=(price_sort_order == "Low to High"))
+                    
+                    st.write("### Final Filtered Data")
+                    st.write(final_filtered_data)
+        
         finally:
             connection.dispose()
 
